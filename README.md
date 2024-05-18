@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 
 ```
-pyinstaller clipboard.py
+pyinstaller clipboard.py --onefile --noconsole
 ```
 
 ## ToDo
