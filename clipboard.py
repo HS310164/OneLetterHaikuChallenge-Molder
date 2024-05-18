@@ -4,11 +4,10 @@ import re
 import tkinter as tk
 from tkinter import messagebox
 
-def copy_clipboard():
+def copy_clipboard(paticipants):
     paste = pyperclip.paste()
 
     paste_list = paste.replace('\r', '').replace('\n\n','\n').replace('\nスレ主\n','').split('\n')
-
     pattern = r'(20\d{2}/\d{2}/\d{2}|今日|昨日)\s\d{2}:\d{2}'
 
     str_list = []
@@ -28,19 +27,28 @@ def copy_clipboard():
 
     haiku = [''.join(str_list[:5]), ''.join(str_list[5:12]), ''.join(str_list[12:])]
     haiku_text = haiku[0] + ' ' + haiku[1] + ' ' + haiku[2]
-
-    pyperclip.copy(haiku_text)
+    if paticipants:
+        pyperclip.copy(haiku_text + '\n参加者:\n' + ', '.join(name_list))
+    else:
+        pyperclip.copy(haiku_text)
 
     return haiku_text, '\n参加者:\n' + ', '.join(name_list)
 
-def on_button_click():
-    haiku, names = copy_clipboard()
-    messagebox.showinfo("Haiku", haiku + '\n' + names)
+
+def on_button_click(paticipants):
+    haiku, names = copy_clipboard(paticipants)
+    messagebox.showinfo("OneLetterHaikuChallenge-Molder", haiku + '\n' + names)
+
 
 root = tk.Tk()
-root.title("Simple GUI")
+root.title("OneLetterHaikuChallenge-Molder")
+root.geometry('200x120')
+part_flag = tk.BooleanVar()
+part_flag.set(False)
 
-button = tk.Button(root, text="Mold Haiku from Clipboard", command=on_button_click)
+button = tk.Button(root, text="1文字俳句成形", command=lambda:on_button_click(part_flag.get()))
 button.pack(pady=20)
+part_check = tk.Checkbutton(root, text='参加者を含める', variable=part_flag)
+part_check.place(x=20, y=50)
 
 root.mainloop()
